@@ -11,7 +11,7 @@ class Trade(Base):
     id = Column(Integer, primary_key=True)
     symbol = Column(String)
     price = Column(Float)
-    timestamp = Column(DateTime, default=lambda: datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    timestamp = Column(DateTime, default=datetime.now())
 
 
 trade_symbol_index = Index('trade_symbol_index', Trade.symbol)
