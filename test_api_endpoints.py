@@ -1,5 +1,3 @@
-# test_api_endpoints.py
-
 import unittest
 from models import Trade
 from unittest.mock import patch
@@ -28,7 +26,7 @@ class TestAPIEndpoints(unittest.TestCase):
             mock_session.return_value.query.return_value.filter_by.return_value.order_by.return_value.first.return_value = None
             response = self.app.get(f'{CURRENT_PRICE_ENDPOINT}?symbol=BTCUSD')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_missing_symbol_current_price(self):
         with patch('data_manager.Session') as mock_session:
@@ -42,7 +40,7 @@ class TestAPIEndpoints(unittest.TestCase):
             mock_session.return_value.query.return_value.filter_by.return_value.order_by.return_value.first.return_value = None
             response = self.app.get(f'{CURRENT_PRICE_ENDPOINT}?symbol=UNKNOWN')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_invalid_symbol_current_price(self):
         with patch('data_manager.Session') as mock_session:
@@ -63,7 +61,7 @@ class TestAPIEndpoints(unittest.TestCase):
             mock_session.return_value.query.return_value.filter_by.return_value.order_by.return_value.first.return_value = None
             response = self.app.get(f'{CURRENT_PRICE_ENDPOINT}?symbol=ETHUSD')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_database_error_current_price(self):
         with patch('data_manager.Session') as mock_session:
@@ -114,7 +112,7 @@ class TestAPIEndpoints(unittest.TestCase):
             response = self.app.get(
                 f'{HISTORICAL_DATA_ENDPOINT}?symbol=VETUSD&start_date=2024-05-08 12:57:51&end_date=2024-05-08 13:10:12')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_valid_date_format_historical_data(self):
         with patch('data_manager.Session') as mock_session:
@@ -145,7 +143,7 @@ class TestAPIEndpoints(unittest.TestCase):
             response = self.app.get(
                 f'{HISTORICAL_DATA_ENDPOINT}?symbol=VETUSDT&start_date=2024-06-01 00:00:00&end_date=2024-06-10 00:00:00')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_valid_date_range_historical_data(self):
         mock_data = [
@@ -181,7 +179,7 @@ class TestAPIEndpoints(unittest.TestCase):
                 f'{HISTORICAL_DATA_ENDPOINT}?symbol=VETUSDT&start_date=2024-05-08 12:57:51&end_date=2024-05-08 13:10:12&page=100')
 
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_database_error_historical_data(self):
         with patch('data_manager.Session') as mock_session:
@@ -251,7 +249,7 @@ class TestAPIEndpoints(unittest.TestCase):
             mock_session.return_value.query.return_value.filter_by.return_value.all.return_value = None
             response = self.app.get(f'{STATISTICAL_ANALYSIS_ENDPOINT}?symbol=UNKNOWN')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_invalid_symbol_statistical_analysis(self):
         with patch('data_manager.Session') as mock_session:
@@ -303,7 +301,7 @@ class TestAPIEndpoints(unittest.TestCase):
             mock_session.return_value.query.return_value.filter_by.return_value.first.return_value = None
             response = self.app.get(f'{STATISTICAL_ANALYSIS_ENDPOINT}?symbol=XYZUSD')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_start_date_after_end_date_statistical_analysis(self):
         with patch('data_manager.Session') as mock_session:
@@ -319,7 +317,7 @@ class TestAPIEndpoints(unittest.TestCase):
             response = self.app.get(
                 f'{STATISTICAL_ANALYSIS_ENDPOINT}?symbol=VETUSDT&start_date=2024-06-01 00:00:00&end_date=2024-06-10 00:00:00')
             self.assertEqual(response.status_code, 404)
-            self.assertIn('message', response.json)
+            self.assertIn('error', response.json)
 
     def test_valid_date_range_statistical_analysis(self):
         mock_data = [

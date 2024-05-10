@@ -86,7 +86,7 @@ def get_historical_data():
 
             if not trades and (page > 1 and total_items > 0):
                 total_pages = (total_items + per_page - 1) // per_page
-                return jsonify({'message': 'Requested page is out of range. Please provide a valid page number',
+                return jsonify({'error': 'Requested page is out of range. Please provide a valid page number',
                                 'total_items': total_items, 'total_pages': total_pages}), 404
 
             data = [{'symbol': trade.symbol, 'price': trade.price, 'timestamp': trade.timestamp} for trade in
@@ -133,7 +133,7 @@ def perform_statistical_analysis():
         with Session() as session:
             symbol_exists = session.query(Trade).filter_by(symbol=symbol).first() is not None
             if not symbol_exists:
-                return jsonify({'message': 'Symbol does not exist in the database'}), 404
+                return jsonify({'error': 'Symbol does not exist in the database'}), 404
 
             query = session.query(Trade.price).filter(Trade.symbol == symbol)
 
@@ -143,7 +143,7 @@ def perform_statistical_analysis():
                                                                       Trade.timestamp <= end_date))).scalar()
 
                 if not date_range_exists:
-                    return jsonify({'message': 'Data not found for the specified date range'}), 404
+                    return jsonify({'error': 'Data not found for the specified date range'}), 404
 
                 query = query.filter(and_(Trade.timestamp >= start_date, Trade.timestamp <= end_date))
 
