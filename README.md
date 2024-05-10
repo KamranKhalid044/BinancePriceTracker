@@ -331,7 +331,7 @@ GET http://localhost:5000/historical_data?symbol=XYZ&start_date=2024-05-08%2012:
   
 ## Statistical Analysis Endpoint
 
-###Perform Basic Statistical Analyses for Cryptocurrency Data
+### Perform Basic Statistical Analyses for Cryptocurrency Data
 1. **Average Price:** The average price of the specified cryptocurrency is calculated by summing up all the prices and dividing by the total number of data points.
 2. **Median Price:** The median price represents the middle value of the dataset when arranged in ascending order. It divides the dataset into two equal halves.
 3. **Standard Deviation:** The standard deviation measures the dispersion or variability of prices from the average price. It indicates how much the prices deviate from the mean.
