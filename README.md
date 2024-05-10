@@ -76,8 +76,9 @@ To run the Flask APIs for the Binance Price Tracker, follow these steps (**Skip 
 
 4. **Stopping the Flask Application**:
    - To stop the Flask application, press `Ctrl + C` in the terminal window where the application is running. This will shut down the Flask server.
+   
+## Current Price Endpoint
 
-##Current Price Endpoint
 ### Retrieving the latest Current Price of a Specific Cryptocurrency
  - Endpoint URL: `http://localhost:5000/current_price`
  - Method: `GET`
@@ -157,7 +158,8 @@ GET http://localhost:5000/current_price?symbol=XYZ
         "error": "Error occurred while fetching current price: <error_details>"
     }
 
-##Historical Data Endpoint
+## Historical Data Endpoint
+
 ### Retrieving Historical Price Data for a User-Specified Date Range
 
 Retrieving historical price data within a user-specified date range, users can specify their desired timeframe using start and end date parameters in their requests. The date format for these parameters are "YYYY-MM-DD HH:MM:SS".
@@ -327,7 +329,8 @@ GET http://localhost:5000/historical_data?symbol=XYZ&start_date=2024-05-08%2012:
         "error": "Error occurred while fetching historical data: <error_details>"
     }
   
-##Statistical Analysis Endpoint
+## Statistical Analysis Endpoint
+
 ###Perform Basic Statistical Analyses for Cryptocurrency Data
 1. **Average Price:** The average price of the specified cryptocurrency is calculated by summing up all the prices and dividing by the total number of data points.
 2. **Median Price:** The median price represents the middle value of the dataset when arranged in ascending order. It divides the dataset into two equal halves.
