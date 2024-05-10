@@ -1,6 +1,3 @@
-# app.py
-
-
 from datetime import datetime
 from models import Trade, Session
 from flask import Flask, request, jsonify
@@ -30,14 +27,14 @@ def get_current_price():
         with Session() as session:
             symbol_exists = session.query(Trade).filter_by(symbol=symbol).first() is not None
             if not symbol_exists:
-                return jsonify({'message': 'Symbol does not exist in the database'}), 404
+                return jsonify({'error': 'Symbol does not exist in the database'}), 404
 
             trade = session.query(Trade).filter_by(symbol=symbol).order_by(desc(Trade.timestamp),
                                                                            desc(Trade.id)).first()
             if trade:
                 return jsonify({'symbol': trade.symbol, 'price': trade.price}), 200
             else:
-                return jsonify({'message': 'Data not found for the specified symbol'}), 404
+                return jsonify({'error': 'Data not found for the specified symbol'}), 404
     except SQLAlchemyError as e:
         return jsonify({'error': f'Database error: {e}'}), 500
     except Exception as e:
@@ -56,8 +53,8 @@ def get_historical_data():
         return jsonify({'error': 'Please provide symbol, start_date, and end_date parameters'}), 400
 
     try:
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M:%S')
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M:%S')
+        start_date = datetime.strptime(start_date_str.replace('%20', ' '), '%Y-%m-%d %H:%M:%S')
+        end_date = datetime.strptime(end_date_str.replace('%20', ' '), '%Y-%m-%d %H:%M:%S')
     except ValueError:
         return jsonify({'error': 'Invalid date format, date format must be YYYY-MM-DD HH:MM:SS'}), 400
 
@@ -68,22 +65,23 @@ def get_historical_data():
         with Session() as session:
             symbol_exists = session.query(Trade).filter_by(symbol=symbol).first() is not None
             if not symbol_exists:
-                return jsonify({'message': 'Symbol does not exist in the database'}), 404
+                return jsonify({'error': 'Symbol does not exist in the database'}), 404
 
-            date_range_exists = session.query(exists().where(Trade.symbol == symbol,
-                                                             Trade.timestamp >= str(start_date),
-                                                             Trade.timestamp <= str(end_date))).scalar()
+            date_range_exists = session.query(exists().where(and_(Trade.symbol == symbol,
+                                                                  Trade.timestamp >= start_date,
+                                                                  Trade.timestamp <= end_date))).scalar()
+
             if not date_range_exists:
-                return jsonify({'message': 'Data not found for the specified date range'}), 404
+                return jsonify({'error': 'Data not found for the specified date range'}), 404
 
             total_items = session.query(func.count(Trade.id)).filter(Trade.symbol == symbol,
-                                                                     Trade.timestamp >= str(start_date),
-                                                                     Trade.timestamp <= str(end_date)).scalar()
+                                                                     Trade.timestamp >= start_date,
+                                                                     Trade.timestamp <= end_date).scalar()
 
             offset = (page - 1) * per_page
 
-            trades = session.query(Trade).filter(Trade.symbol == symbol, Trade.timestamp >= str(start_date),
-                                                 Trade.timestamp <= str(end_date)).order_by(
+            trades = session.query(Trade).filter(Trade.symbol == symbol, Trade.timestamp >= start_date,
+                                                 Trade.timestamp <= end_date).order_by(
                 desc(Trade.timestamp)).limit(per_page).offset(offset).all()
 
             if not trades and (page > 1 and total_items > 0):
@@ -123,8 +121,8 @@ def perform_statistical_analysis():
 
     if start_date_str and end_date_str:
         try:
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M:%S')
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M:%S')
+            start_date = datetime.strptime(start_date_str.replace('%20', ' '), '%Y-%m-%d %H:%M:%S')
+            end_date = datetime.strptime(end_date_str.replace('%20', ' '), '%Y-%m-%d %H:%M:%S')
         except ValueError:
             return jsonify({'error': 'Invalid date format, date format must be YYYY-MM-DD HH:MM:SS'}), 400
 
@@ -140,13 +138,14 @@ def perform_statistical_analysis():
             query = session.query(Trade.price).filter(Trade.symbol == symbol)
 
             if start_date and end_date:
-                date_range_exists = session.query(
-                    exists().where(and_(Trade.timestamp >= str(start_date), Trade.timestamp <= str(end_date)))).scalar()
+                date_range_exists = session.query(exists().where(and_(Trade.symbol == symbol,
+                                                                      Trade.timestamp >= start_date,
+                                                                      Trade.timestamp <= end_date))).scalar()
 
                 if not date_range_exists:
                     return jsonify({'message': 'Data not found for the specified date range'}), 404
 
-                query = query.filter(and_(Trade.timestamp >= str(start_date), Trade.timestamp <= str(end_date)))
+                query = query.filter(and_(Trade.timestamp >= start_date, Trade.timestamp <= end_date))
 
             trades = query.all()
             prices = [trade.price for trade in trades]

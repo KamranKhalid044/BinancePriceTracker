@@ -1,5 +1,3 @@
-# websocket_trade_handler.py
-
 import json
 import asyncio
 import websockets

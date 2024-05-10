@@ -1,5 +1,3 @@
-# data_manager.py
-
 from utils import print_log
 from models import Trade, Session
 from sqlalchemy.exc import SQLAlchemyError
