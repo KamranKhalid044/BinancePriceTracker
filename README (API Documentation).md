@@ -1,6 +1,6 @@
 ## API Endpoints Documentation
 
-##1. Current Price Endpoint
+## 1. Current Price Endpoint
 
 ### Retrieving the latest Current Price of a Specific Cryptocurrency
  - Endpoint URL: `http://localhost:5000/current_price`
@@ -81,7 +81,7 @@ GET http://localhost:5000/current_price?symbol=XYZ
         "error": "Error occurred while fetching current price: <error_details>"
     }
 
-##2. Historical Data Endpoint
+## 2. Historical Data Endpoint
 
 ### Retrieving Historical Price Data for a User-Specified Date Range
 
@@ -252,7 +252,7 @@ GET http://localhost:5000/historical_data?symbol=XYZ&start_date=2024-05-08%2012:
         "error": "Error occurred while fetching historical data: <error_details>"
     }
   
-##3. Statistical Analysis Endpoint
+## 3. Statistical Analysis Endpoint
 
 ### Perform Basic Statistical Analyses for Cryptocurrency Data
 1. **Average Price:** The average price of the specified cryptocurrency is calculated by summing up all the prices and dividing by the total number of data points.
